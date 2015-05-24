@@ -26,10 +26,10 @@ namespace IntervalTimer
         private TimeSpan _oneSecondSpan = new TimeSpan(0, 0, 1);
         private TimerState _state = TimerState.None;
 
-        private int _workMinutes = 20;
+        private TimeSpan _workSpan = new TimeSpan(0, 0, 5);
         private int _workChunksComplete = 0;
-        private int _restMinutes = 5;
-        private int _restLongMinutes = 15;
+        private TimeSpan _restSpan = new TimeSpan(0, 0, 3);
+        private TimeSpan _restLongSpan = new TimeSpan(0, 0, 8);
         private TimeSpan _restMinutesAccumulation = new TimeSpan(0);
 
         private enum TimerState {
@@ -57,7 +57,7 @@ namespace IntervalTimer
                 _timer = new Timer();
                 _timer.Tick += TimerOnTick;
                 _timer.Interval = 1000;
-                _currentRemainingDuration = new TimeSpan(0, _workMinutes, 0);
+                _currentRemainingDuration = _workSpan;
                 UpdateTimerDisplay();
                 _state = TimerState.Work;
                 btnCancel.Visible = true;
@@ -76,14 +76,15 @@ namespace IntervalTimer
                     ++_workChunksComplete;
                     _state = TimerState.Rest;
                     //every fourth chunk, they get a longer break
-                    _restMinutesAccumulation.Add(
-                        new TimeSpan(0, (_workChunksComplete % 4 == 0 ? _restLongMinutes : _restMinutes), 0)
+                    _restMinutesAccumulation = _restMinutesAccumulation.Add(
+                        _workChunksComplete % 4 == 0 ? _restLongSpan : _restSpan
                     );
                     _currentRemainingDuration = _restMinutesAccumulation;
                 }
                 else if (_state == TimerState.Rest) {
+                    _restMinutesAccumulation = _currentRemainingDuration;
                     _state = TimerState.Work;
-                    _restMinutesAccumulation.Add(new TimeSpan(0, _workMinutes, 0));
+                    _currentRemainingDuration = _workSpan;
                 }
             }
         }
