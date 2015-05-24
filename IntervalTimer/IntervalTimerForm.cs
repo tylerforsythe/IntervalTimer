@@ -19,6 +19,18 @@ namespace IntervalTimer
             //Hidden panel over the entire thing to be draggable
             panel1.MouseDown += panel1_MouseDown;
             btnCancel.Visible = false;
+            btnSaveBreak.Visible = false;
+
+            if (1 == 1) {
+                _workSpan = new TimeSpan(0, 20, 0);
+                _restSpan = new TimeSpan(0, 5, 0);
+                _restLongSpan = new TimeSpan(0, 15, 0);
+            }
+            else {
+                _workSpan = new TimeSpan(0, 0, 5);
+                _restSpan = new TimeSpan(0, 0, 3);
+                _restLongSpan = new TimeSpan(0, 0, 8);
+            }
         }
 
         private Timer _timer = null;
@@ -26,10 +38,10 @@ namespace IntervalTimer
         private TimeSpan _oneSecondSpan = new TimeSpan(0, 0, 1);
         private TimerState _state = TimerState.None;
 
-        private TimeSpan _workSpan = new TimeSpan(0, 0, 5);
         private int _workChunksComplete = 0;
-        private TimeSpan _restSpan = new TimeSpan(0, 0, 3);
-        private TimeSpan _restLongSpan = new TimeSpan(0, 0, 8);
+        private TimeSpan _workSpan;
+        private TimeSpan _restSpan;
+        private TimeSpan _restLongSpan;
         private TimeSpan _restMinutesAccumulation = new TimeSpan(0);
 
         private enum TimerState {
@@ -75,6 +87,7 @@ namespace IntervalTimer
                 if (_state == TimerState.Work) {
                     ++_workChunksComplete;
                     _state = TimerState.Rest;
+                    btnSaveBreak.Visible = true;
                     //every fourth chunk, they get a longer break
                     _restMinutesAccumulation = _restMinutesAccumulation.Add(
                         _workChunksComplete % 4 == 0 ? _restLongSpan : _restSpan
@@ -84,12 +97,19 @@ namespace IntervalTimer
                 else if (_state == TimerState.Rest) {
                     _restMinutesAccumulation = _currentRemainingDuration;
                     _state = TimerState.Work;
+                    btnSaveBreak.Visible = false;
                     _currentRemainingDuration = _workSpan;
                 }
             }
         }
 
         private void btnCancel_Click(object sender, EventArgs e) {
+            var confirmResult = MessageBox.Show("Are you sure you want to cancel?",
+                                     "Confirm Cancel",
+                                     MessageBoxButtons.YesNo);
+            if (confirmResult == DialogResult.No)
+                return;
+
             _timer.Stop();
             lblTime.Text = "----";
             _workChunksComplete = 0;
@@ -102,7 +122,18 @@ namespace IntervalTimer
         }
 
         private void btnExit_Click(object sender, EventArgs e) {
-            Application.Exit();
+            var confirmResult = MessageBox.Show("Are you sure you want to exit?",
+                                     "Confirm Exit",
+                                     MessageBoxButtons.YesNo);
+            if (confirmResult == DialogResult.Yes) {
+                Application.Exit();
+            }
+        }
+
+        private void btnSaveBreak_Click(object sender, EventArgs e) {
+            _restMinutesAccumulation = _currentRemainingDuration;
+            _state = TimerState.Work;
+            _currentRemainingDuration = _workSpan;
         }
     }
 }
