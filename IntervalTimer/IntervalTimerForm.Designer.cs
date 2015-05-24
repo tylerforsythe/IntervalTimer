@@ -48,7 +48,7 @@
             // 
             this.btnCancel.Location = new System.Drawing.Point(85, 170);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.Size = new System.Drawing.Size(64, 23);
             this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -57,11 +57,11 @@
             // lblTime
             // 
             this.lblTime.AutoSize = true;
-            this.lblTime.Font = new System.Drawing.Font("Gill Sans Ultra Bold", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTime.Font = new System.Drawing.Font("Consolas", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTime.ForeColor = System.Drawing.Color.White;
             this.lblTime.Location = new System.Drawing.Point(86, 37);
             this.lblTime.Name = "lblTime";
-            this.lblTime.Size = new System.Drawing.Size(74, 30);
+            this.lblTime.Size = new System.Drawing.Size(58, 24);
             this.lblTime.TabIndex = 1;
             this.lblTime.Text = "TIME";
             // 
@@ -69,9 +69,9 @@
             // 
             this.btnTimerAction.Location = new System.Drawing.Point(89, 86);
             this.btnTimerAction.Name = "btnTimerAction";
-            this.btnTimerAction.Size = new System.Drawing.Size(75, 23);
+            this.btnTimerAction.Size = new System.Drawing.Size(111, 23);
             this.btnTimerAction.TabIndex = 0;
-            this.btnTimerAction.Text = "Timer Start";
+            this.btnTimerAction.Text = "Timer Toggle";
             this.btnTimerAction.UseVisualStyleBackColor = true;
             this.btnTimerAction.Click += new System.EventHandler(this.btnTimerAction_Click);
             // 

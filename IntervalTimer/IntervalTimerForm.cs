@@ -24,7 +24,13 @@ namespace IntervalTimer
         private Timer _timer = null;
         private TimeSpan _currentRemainingDuration;
         private TimeSpan _oneSecondSpan = new TimeSpan(0, 0, 1);
-        private TimerState _state = TimerState.None; 
+        private TimerState _state = TimerState.None;
+
+        private int _workMinutes = 20;
+        private int _workChunksComplete = 0;
+        private int _restMinutes = 5;
+        private int _restLongMinutes = 15;
+        private TimeSpan _restMinutesAccumulation = new TimeSpan(0);
 
         private enum TimerState {
             None,
@@ -51,7 +57,7 @@ namespace IntervalTimer
                 _timer = new Timer();
                 _timer.Tick += TimerOnTick;
                 _timer.Interval = 1000;
-                _currentRemainingDuration = new TimeSpan(0, 0, 5);
+                _currentRemainingDuration = new TimeSpan(0, _workMinutes, 0);
                 UpdateTimerDisplay();
                 _state = TimerState.Work;
                 btnCancel.Visible = true;
@@ -66,15 +72,28 @@ namespace IntervalTimer
             _currentRemainingDuration = _currentRemainingDuration.Subtract(_oneSecondSpan);
             UpdateTimerDisplay();
             if (_currentRemainingDuration.TotalSeconds <= 0) {
-                _timer.Stop();
-                _state = TimerState.Rest;
-                //go into rest mode
+                if (_state == TimerState.Work) {
+                    ++_workChunksComplete;
+                    _state = TimerState.Rest;
+                    //every fourth chunk, they get a longer break
+                    _restMinutesAccumulation.Add(
+                        new TimeSpan(0, (_workChunksComplete % 4 == 0 ? _restLongMinutes : _restMinutes), 0)
+                    );
+                    _currentRemainingDuration = _restMinutesAccumulation;
+                }
+                else if (_state == TimerState.Rest) {
+                    _state = TimerState.Work;
+                    _restMinutesAccumulation.Add(new TimeSpan(0, _workMinutes, 0));
+                }
             }
         }
 
         private void btnCancel_Click(object sender, EventArgs e) {
             _timer.Stop();
-            lblTime.Text = "0";
+            lblTime.Text = "----";
+            _workChunksComplete = 0;
+            _restMinutesAccumulation = new TimeSpan(0);
+            _state = TimerState.None;
         }
 
         private void UpdateTimerDisplay() {
