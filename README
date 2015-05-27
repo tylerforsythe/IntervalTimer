@@ -1,0 +1,3 @@
+Very simple .NET C# app for productivity. Based on the TimeDoser Google Chrome extension. This one isn't as pretty, but importantly, it will NEVER steal focus! This prevents accidentally closing it if you're keyboarding when it steals focus.
+
+Frankly, that is my #1 reason for creating this app.
