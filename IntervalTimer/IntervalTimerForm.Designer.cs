@@ -26,11 +26,11 @@
         /// </summary>
         private void InitializeComponent() {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnSaveBreak = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.lblTime = new System.Windows.Forms.Label();
             this.btnTimerAction = new System.Windows.Forms.Button();
-            this.btnSaveBreak = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,6 +45,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(229, 104);
             this.panel1.TabIndex = 0;
+            // 
+            // btnSaveBreak
+            // 
+            this.btnSaveBreak.Location = new System.Drawing.Point(139, 12);
+            this.btnSaveBreak.Name = "btnSaveBreak";
+            this.btnSaveBreak.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveBreak.TabIndex = 4;
+            this.btnSaveBreak.Text = "Save Break";
+            this.btnSaveBreak.UseVisualStyleBackColor = true;
+            this.btnSaveBreak.Click += new System.EventHandler(this.btnSaveBreak_Click);
             // 
             // btnExit
             // 
@@ -86,16 +96,6 @@
             this.btnTimerAction.Text = "Timer Toggle";
             this.btnTimerAction.UseVisualStyleBackColor = true;
             this.btnTimerAction.Click += new System.EventHandler(this.btnTimerAction_Click);
-            // 
-            // btnSaveBreak
-            // 
-            this.btnSaveBreak.Location = new System.Drawing.Point(139, 12);
-            this.btnSaveBreak.Name = "btnSaveBreak";
-            this.btnSaveBreak.Size = new System.Drawing.Size(75, 23);
-            this.btnSaveBreak.TabIndex = 4;
-            this.btnSaveBreak.Text = "Save Break";
-            this.btnSaveBreak.UseVisualStyleBackColor = true;
-            this.btnSaveBreak.Click += new System.EventHandler(this.btnSaveBreak_Click);
             // 
             // IntervalTimerForm
             // 

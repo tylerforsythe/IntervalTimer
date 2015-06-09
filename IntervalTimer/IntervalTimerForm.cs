@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -21,10 +22,19 @@ namespace IntervalTimer
             btnCancel.Visible = false;
             btnSaveBreak.Visible = false;
 
+            string workMinutesStr = ConfigurationManager.AppSettings["WORK_MINUTES"] ?? "20";
+            string restMinutesStr = ConfigurationManager.AppSettings["REST_MINUTES"] ?? "5";
+            string restMinutesLongStr = ConfigurationManager.AppSettings["REST_MINUTES_LONG"] ?? "15";
+
+            int workMinutes = 20, restMinutes = 5, restMinutesLong = 15;
+            int.TryParse(workMinutesStr, out workMinutes);
+            int.TryParse(restMinutesStr, out restMinutes);
+            int.TryParse(restMinutesLongStr, out restMinutesLong);
+
             if (1 == 1) {
-                _workSpan = new TimeSpan(0, 20, 0);
-                _restSpan = new TimeSpan(0, 5, 0);
-                _restLongSpan = new TimeSpan(0, 15, 0);
+                _workSpan = new TimeSpan(0, workMinutes, 0);
+                _restSpan = new TimeSpan(0, restMinutes, 0);
+                _restLongSpan = new TimeSpan(0, restMinutesLong, 0);
             }
             else {
                 _workSpan = new TimeSpan(0, 0, 5);
@@ -73,7 +83,9 @@ namespace IntervalTimer
                 UpdateTimerDisplay();
                 _state = TimerState.Work;
                 btnCancel.Visible = true;
+                btnSaveBreak.Visible = false;
                 _timer.Start();
+                PlayAudio("work.mp3");
             }
             else if (_state == TimerState.Work || _state == TimerState.Rest) {
                 _timer.Enabled = !_timer.Enabled;
@@ -84,6 +96,7 @@ namespace IntervalTimer
             _currentRemainingDuration = _currentRemainingDuration.Subtract(_oneSecondSpan);
             UpdateTimerDisplay();
             if (_currentRemainingDuration.TotalSeconds <= 0) {
+                //  Transition from work to rest
                 if (_state == TimerState.Work) {
                     ++_workChunksComplete;
                     _state = TimerState.Rest;
@@ -93,14 +106,23 @@ namespace IntervalTimer
                         _workChunksComplete % 4 == 0 ? _restLongSpan : _restSpan
                     );
                     _currentRemainingDuration = _restMinutesAccumulation;
+                    PlayAudio("break.mp3");
                 }
+                //  Transition from rest to work
                 else if (_state == TimerState.Rest) {
                     _restMinutesAccumulation = _currentRemainingDuration;
                     _state = TimerState.Work;
                     btnSaveBreak.Visible = false;
                     _currentRemainingDuration = _workSpan;
+                    PlayAudio("work.mp3");
                 }
             }
+        }
+
+        private void PlayAudio(string soundFileName) {
+            var wplayer = new WMPLib.WindowsMediaPlayer();
+            wplayer.URL = "audio/" + soundFileName;
+            wplayer.controls.play();
         }
 
         private void btnCancel_Click(object sender, EventArgs e) {
@@ -134,6 +156,8 @@ namespace IntervalTimer
             _restMinutesAccumulation = _currentRemainingDuration;
             _state = TimerState.Work;
             _currentRemainingDuration = _workSpan;
+            btnSaveBreak.Visible = false;
+            PlayAudio("work.mp3");
         }
     }
 }
